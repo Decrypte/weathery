@@ -18,7 +18,7 @@ A comprehensive weather application that provides current weather, 5-day forecas
 
 ## Project Structure
 ```
-weather-app/
+weathery/
 ├── app.py              # Flask backend
 ├── weather.db          # SQLite database (auto-created)
 ├── static/
@@ -33,8 +33,8 @@ weather-app/
 
 1. **Clone the repository**
    ```bash
-   git clone [your-repo-url]
-   cd weather-app
+   git clone https://github.com/Decrypte/weathery.git
+   cd weathery
    ```
 
 2. **Install Flask**
@@ -92,7 +92,7 @@ The application uses free tier API keys included in `config.js`:
 - Open-Meteo: For historical weather data (no key required)
 
 ## Developer
-[Your Name]
+Tirtha N.
 
 ## About PM Accelerator
 Product Manager Accelerator is the world's first AI-powered product management learning platform.

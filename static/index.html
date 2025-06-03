@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weathery - Smart Weather App</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌤️ Weathery</h1>
+            <p>Get real-time and historical weather information</p>
+            <button class="info-btn" onclick="showInfo()">ℹ️ About</button>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('forecast')">Current & Forecast</button>
+            <button class="tab-btn" onclick="switchTab('historical')">Historical Data</button>
+            <button class="tab-btn" onclick="switchTab('history')">Search History</button>
+        </div>
+
+        <div id="forecastTab" class="tab-content active">
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" class="search-input"
+                        placeholder="Enter city, ZIP code, coordinates, or landmark..." id="locationInput">
+                    <button class="search-btn" onclick="searchWeather()">🔍 Search</button>
+                    <button class="location-btn" onclick="getCurrentLocation()">📍 My Location</button>
+                </div>
+                <div class="search-hint">
+                    💡 <strong>Try:</strong> "New York", "10001", "40.7128,-74.0060", "Times Square", or "London, UK"
+                </div>
+            </div>
+
+            <div id="loading" class="loading hidden">Loading weather data...</div>
+            <div id="error" class="error hidden"></div>
+
+            <div id="weatherData" class="hidden">
+                <div class="weather-card">
+                    <div class="weather-main">
+                        <img id="weatherIcon" class="weather-icon" src="" alt="Weather Icon">
+                        <div class="temperature" id="temperature"></div>
+                    </div>
+                    <div class="description" id="description"></div>
+                    <div class="location" id="location"></div>
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Feels Like</div>
+                            <div class="detail-value" id="feelsLike"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Humidity</div>
+                            <div class="detail-value" id="humidity"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Wind Speed</div>
+                            <div class="detail-value" id="windSpeed"></div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Pressure</div>
+                            <div class="detail-value" id="pressure"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="forecastSection" class="forecast-section hidden">
+                <h2 class="forecast-title">📅 5-Day Forecast</h2>
+                <div class="forecast-container" id="forecastContainer"></div>
+            </div>
+
+            <div id="mapSection" class="map-section hidden">
+                <h2 class="map-title">📍 Location Map</h2>
+                <div class="map-container">
+                    <img id="locationMap" class="location-map" src="" alt="Location Map">
+                    <p id="mapLocation" class="map-location-text"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="historicalTab" class="tab-content">
+            <div class="historical-section">
+                <div class="input-mode-selector">
+                    <label>
+                        <input type="radio" name="inputMode" value="place" checked onchange="toggleInputMode()">
+                        Place Name
+                    </label>
+                    <label>
+                        <input type="radio" name="inputMode" value="coords" onchange="toggleInputMode()">
+                        Coordinates
+                    </label>
+                </div>
+
+                <div id="placeInput" class="input-group">
+                    <input type="text" id="historicalPlace"
+                        placeholder="Enter place (e.g., 'Liverpool', 'Paris, France')" class="search-input">
+                </div>
+
+                <div id="coordsInput" class="input-group hidden">
+                    <input type="number" id="latitude" placeholder="Latitude" step="0.0001" min="-90" max="90"
+                        class="coord-input">
+                    <input type="number" id="longitude" placeholder="Longitude" step="0.0001" min="-180" max="180"
+                        class="coord-input">
+                </div>
+
+                <div class="date-inputs">
+                    <div class="date-group">
+                        <label>Start Date:</label>
+                        <input type="date" id="startDate" class="date-input">
+                    </div>
+                    <div class="date-group">
+                        <label>Days to Fetch (max 10):</label>
+                        <input type="number" id="numDays" min="1" max="10" value="7" class="days-input">
+                    </div>
+                </div>
+
+                <div class="granularity-selector">
+                    <label>Data Type:</label>
+                    <select id="granularity" class="granularity-select">
+                        <option value="hourly">Hourly</option>
+                        <option value="daily" selected>Daily</option>
+                    </select>
+                </div>
+
+                <button class="fetch-btn" onclick="fetchHistoricalData()">📊 Fetch Historical Data</button>
+
+                <div id="historicalLoading" class="loading hidden">Fetching historical data...</div>
+                <div id="historicalError" class="error hidden"></div>
+
+                <div id="historicalResults" class="historical-results hidden">
+                    <div class="results-header">
+                        <h3>Historical Weather Data</h3>
+                        <button class="export-btn" onclick="exportToCSV()">💾 Export to CSV</button>
+                    </div>
+                    <div id="historicalSummary" class="summary-section"></div>
+                    <div id="historicalTable" class="table-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="historyTab" class="tab-content">
+            <div class="history-section">
+                <div class="history-header">
+                    <h2>📜 Recent Searches</h2>
+                    <button class="clear-history-btn" onclick="clearHistory()">🗑️ Clear All</button>
+                </div>
+                <div id="historyLoading" class="loading hidden">Loading history...</div>
+                <div id="historyError" class="error hidden"></div>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </div>
+
+        <div id="infoModal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close" onclick="closeInfo()">&times;</span>
+                <h2>About This App</h2>
+                <p><strong>Developer:</strong> Tirtha N.</p>
+                <h3>About PM Accelerator</h3>
+                <p>PM Accelerator is the world's first AI-powered product management learning platform.
+                    They offer comprehensive programs designed to help aspiring and current product managers excel in
+                    their careers through practical, hands-on learning experiences.</p>
+                <p><strong>LinkedIn: </strong><a href="https://www.linkedin.com/company/pm-accelerator/about/"
+                        target="_blank">PM
+                        Accelerator</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/config.js"></script>
+    <script src="/app.js"></script>
+</body>
+
+</html>
